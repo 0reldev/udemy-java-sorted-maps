@@ -59,6 +59,111 @@ public class Main {
 //        2023-01-09: [Purchase[courseId=jmc101, studentId=1, price=129.99, yr=2023, dayOfYear=9]]
 //        2023-01-10: [Purchase[courseId=pyt101, studentId=9, price=129.99, yr=2023, dayOfYear=10]]
 //        2023-01-14: [Purchase[courseId=pyt101, studentId=4, price=119.99, yr=2023, dayOfYear=14]]
+
+        int currentYear = LocalDate.now().getYear();
+
+        LocalDate firstDay = LocalDate.ofYearDay(currentYear, 1);
+        LocalDate week1 =  firstDay.plusDays(7);
+        Map<LocalDate, List<Purchase>> week1Purchases = datedPurchases.headMap(week1);
+        Map<LocalDate, List<Purchase>> week2Purchases = datedPurchases.tailMap(week1);
+
+//        System.out.println("-".repeat(20));
+//        week1Purchases.forEach((key, value) -> System.out.println(key + ": " + value));
+//        2023-01-02: [Purchase[courseId=jmc101, studentId=2, price=139.99, yr=2023, dayOfYear=2], Purchase[courseId=jmc101, studentId=3, price=149.99, yr=2023, dayOfYear=2]]
+//        2023-01-03: [Purchase[courseId=pyt101, studentId=1, price=149.99, yr=2023, dayOfYear=3]]
+//        2023-01-04: [Purchase[courseId=jmc101, studentId=8, price=139.99, yr=2023, dayOfYear=4]]
+//        2023-01-06: [Purchase[courseId=pyt101, studentId=5, price=119.99, yr=2023, dayOfYear=6]]
+//        2023-01-07: [Purchase[courseId=jmc101, studentId=1, price=129.99, yr=2023, dayOfYear=7], Purchase[courseId=pyt101, studentId=4, price=119.99, yr=2023, dayOfYear=7]]
+//        System.out.println("-".repeat(20));
+//        week2Purchases.forEach((key, value) -> System.out.println(key + ": " + value));
+//        2023-01-11: [Purchase[courseId=jmc101, studentId=6, price=139.99, yr=2023, dayOfYear=11], Purchase[courseId=pyt101, studentId=7, price=139.99, yr=2023, dayOfYear=11], Purchase[courseId=pyt101, studentId=9, price=129.99, yr=2023, dayOfYear=11]]
+
+        displayStats(1, week1Purchases);
+//        --------------------
+//        2023-01-01: [Purchase[courseId=jmc101, studentId=2, price=139.99, yr=2023, dayOfYear=1]]
+//        2023-01-03: [Purchase[courseId=jmc101, studentId=1, price=129.99, yr=2023, dayOfYear=3], Purchase[courseId=jmc101, studentId=6, price=139.99, yr=2023, dayOfYear=3], Purchase[courseId=pyt101, studentId=9, price=129.99, yr=2023, dayOfYear=3]]
+//        2023-01-07: [Purchase[courseId=jmc101, studentId=8, price=139.99, yr=2023, dayOfYear=7]]
+//        Week 1 purchases = {jmc101=4, pyt101=1}
+
+        displayStats(2, week2Purchases);
+//        --------------------
+//        2023-01-10: [Purchase[courseId=pyt101, studentId=4, price=119.99, yr=2023, dayOfYear=10]]
+//        2023-01-11: [Purchase[courseId=pyt101, studentId=5, price=119.99, yr=2023, dayOfYear=11]]
+//        2023-01-12: [Purchase[courseId=jmc101, studentId=3, price=149.99, yr=2023, dayOfYear=12]]
+//        2023-01-13: [Purchase[courseId=pyt101, studentId=7, price=139.99, yr=2023, dayOfYear=13]]
+//        2023-01-14: [Purchase[courseId=pyt101, studentId=1, price=149.99, yr=2023, dayOfYear=14]]
+//        Week 2 purchases = {jmc101=1, pyt101=4}
+
+        System.out.println("----------------");
+
+        LocalDate lastDate = datedPurchases.lastKey();
+        var previousEntry = datedPurchases.lastEntry();
+
+        while(previousEntry != null) {
+            List<Purchase> lastDaysData = previousEntry.getValue();
+            System.out.println(lastDate + " purchases : " + lastDaysData.size());
+
+            LocalDate prevDate = datedPurchases.lowerKey(lastDate);
+            previousEntry = datedPurchases.lowerEntry(lastDate);
+            lastDate = prevDate;
+//            2023-01-14 purchases : 1
+//            2023-01-11 purchases : 1
+//            2023-01-08 purchases : 2
+//            2023-01-06 purchases : 3
+//            2023-01-05 purchases : 1
+//            2023-01-03 purchases : 1
+//            2023-01-01 purchases : 1
+        }
+
+        System.out.println("-".repeat(15));
+        var reversed = datedPurchases.descendingMap();
+
+        LocalDate firstDate = reversed.firstKey();
+        var nextEntry = reversed.firstEntry();
+//        var nextEntry = reversed.pollFirstEntry();
+
+        while (nextEntry != null) {
+            List<Purchase> lastDaysData = nextEntry.getValue();
+            System.out.println(firstDate + " purchases : " + lastDaysData.size());
+
+            LocalDate nextDate = reversed.higherKey(firstDate);
+            nextEntry = reversed.higherEntry(firstDate);
+//            nextEntry = reversed.pollFirstEntry();
+            firstDate = nextDate;
+        }
+//        ----------------
+//        2023-01-14 purchases : 1
+//        2023-01-11 purchases : 1
+//        2023-01-10 purchases : 1
+//        2023-01-08 purchases : 2
+//        2023-01-06 purchases : 1
+//        2023-01-04 purchases : 1
+//        2023-01-03 purchases : 1
+//        2023-01-02 purchases : 1
+//        2023-01-01 purchases : 1
+//        ---------------
+//        2023-01-14 purchases : 1
+//        2023-01-11 purchases : 1
+//        2023-01-10 purchases : 1
+//        2023-01-08 purchases : 2
+//        2023-01-06 purchases : 1
+//        2023-01-04 purchases : 1
+//        2023-01-03 purchases : 1
+//        2023-01-02 purchases : 1
+//        2023-01-01 purchases : 1
+
+        System.out.println("-".repeat(17));
+        datedPurchases.forEach((key, value) -> System.out.println(key + ": " + value));
+//        2023-01-01: [Purchase[courseId=jmc101, studentId=1, price=129.99, yr=2023, dayOfYear=1]]
+//        2023-01-02: [Purchase[courseId=pyt101, studentId=7, price=139.99, yr=2023, dayOfYear=2]]
+//        2023-01-04: [Purchase[courseId=pyt101, studentId=4, price=119.99, yr=2023, dayOfYear=4]]
+//        2023-01-05: [Purchase[courseId=jmc101, studentId=8, price=139.99, yr=2023, dayOfYear=5]]
+//        2023-01-08: [Purchase[courseId=pyt101, studentId=1, price=149.99, yr=2023, dayOfYear=8], Purchase[courseId=jmc101, studentId=3, price=149.99, yr=2023, dayOfYear=8]]
+//        2023-01-09: [Purchase[courseId=pyt101, studentId=5, price=119.99, yr=2023, dayOfYear=9], Purchase[courseId=jmc101, studentId=6, price=139.99, yr=2023, dayOfYear=9]]
+//        2023-01-13: [Purchase[courseId=jmc101, studentId=2, price=139.99, yr=2023, dayOfYear=13]]
+//        2023-01-14: [Purchase[courseId=pyt101, studentId=9, price=129.99, yr=2023, dayOfYear=14]]
+
+
     }
 
     private static void addPurchase(String name, Course course, double price) {
@@ -77,5 +182,18 @@ public class Main {
         int year = LocalDate.now().getYear();
         Purchase purchase = new Purchase(course.courseId(), existingStudent.getId(), price, year, day);
         purchases.put(key, purchase);
+    }
+
+    private static void displayStats(int period, Map<LocalDate, List<Purchase>> periodData) {
+
+        System.out.println("-".repeat(20));
+        Map<String, Integer> weeklyCounts = new TreeMap<>();
+        periodData.forEach((key, value) -> {
+            System.out.println(key + ": " + value);
+            for (Purchase p : value) {
+                weeklyCounts.merge(p.courseId(), 1, Integer::sum);
+            }
+        });
+        System.out.printf("Week %d purchases = %s%n", period, weeklyCounts);
     }
 }
